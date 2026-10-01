@@ -20,7 +20,7 @@ from reportlab.platypus import (
 ROOT = Path(__file__).resolve().parents[1]
 styles = getSampleStyleSheet()
 styles["Normal"].fontSize = 10
-styles["Normal"].leading = 15
+styles["Normal"].leading = 14
 styles["Heading1"].textColor = colors.HexColor("#155e75")
 
 
@@ -126,8 +126,8 @@ def main():
             f"Selected estimator: {result['selected_model']}. Its held-out metrics are: "
             + "; ".join(f"{k}={v:.4f}" for k, v in result["test_metrics"].items())
             + ".",
-            image("artifacts/confusion_matrix.png", width=320, height=240),
-            image("artifacts/roc_curve.png", width=320, height=220),
+            image("artifacts/confusion_matrix.png", width=290, height=190),
+            image("artifacts/roc_curve.png", width=290, height=175),
             "The decision threshold is fixed at 0.5. Recall and precision expose different error costs; the report does not tune a threshold against the test set. A small 61-row test partition means these scores have substantial uncertainty. No external validation or probability calibration has been performed.",
         ],
     )
@@ -187,8 +187,8 @@ def main():
             "Repository deliverables: source, download and training scripts, EDA notebook, raw and cleaned data with citation, requirements files, tests, workflow YAML, Dockerfile, Kubernetes manifests, monitoring configuration, screenshots and this ten-page report.",
             "Submission evidence: actual MLflow experiment view; successful CI logs/artifacts; Docker build and sample prediction; Kubernetes replicas and exposed endpoint; Grafana traffic metrics; short live video of the whole pipeline.",
             "GitHub repository: https://github.com/2025ae05588/ml-assignment1. Verified deployed API access: http://127.0.0.1:8080 through the local kind cluster Ingress. No public cloud URL is claimed.",
-            "reports/DEMO_SCRIPT.md supplies the live recording sequence. A generated local-results walkthrough is supporting material and must not be presented as a live screen recording of remote CI or Kubernetes.",
-            "Remaining work depends on tools/accounts: publish repository, execute GitHub Actions, complete container/cluster monitoring checks where not verified, capture genuine screenshots, and record the live pipeline. reports/COMPLETION_STATUS.md and artifacts/evidence/verification.json distinguish prepared and executed work.",
+            "reports/DEMO_SCRIPT.md supplies the live recording sequence. reports/pipeline_terminal_demo.mp4 records actual deployment/monitoring command outputs and genuine browser screenshots. Raw timestamps and exit codes are in demo_commands.json. It is a terminal-output recording, not an operating-system desktop capture.",
+            "Remaining work: authenticate GitHub, push the local commit, execute GitHub Actions and capture its genuine workflow screenshot. Local container, Kubernetes Ingress and monitoring checks passed. Record a desktop presentation separately if your instructor requires that format. reports/COMPLETION_STATUS.md and artifacts/evidence/verification.json distinguish prepared and executed work.",
             "References: UCI Heart Disease (DOI 10.24432/C52P4X); sklearn Pipeline and GridSearchCV; MLflow tracking; FastAPI; Docker; Kubernetes; Prometheus and Grafana official documentation. Refer to README commands and implementation files for concrete reproduction details.",
         ],
     )

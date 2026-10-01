@@ -1,0 +1,115 @@
+[
+  {
+    "timestamp_utc": "2026-10-01T07:10:51.996913+00:00",
+    "title": "1. Dataset provenance and cleaning",
+    "command": [
+      "cat",
+      "data/metadata.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\n  \"source\": \"https://archive.ics.uci.edu/ml/machine-learning-databases/heart-disease/processed.cleveland.data\",\n  \"doi\": \"10.24432/C52P4X\",\n  \"license\": \"CC BY 4.0\",\n  \"sha256\": \"a74b7efa387bc9d108d7d0115d831fe9b414b29ae7124f331b622b4efa0427c8\",\n  \"raw_rows\": 303,\n  \"clean_rows\": 303,\n  \"duplicates_removed\": 0,\n  \"missing\": {\n    \"age\": 0,\n    \"sex\": 0,\n    \"cp\": 0,\n    \"trestbps\": 0,\n    \"chol\": 0,\n    \"fbs\": 0,\n    \"restecg\": 0,\n    \"thalach\": 0,\n    \"exang\": 0,\n    \"oldpeak\": 0,\n    \"slope\": 0,\n    \"ca\": 4,\n    \"thal\": 2,\n    \"target\": 0\n  },\n  \"target_mapping\": \"num == 0 -> 0; num in {1,2,3,4} -> 1\"\n}",
+    "stderr": ""
+  },
+  {
+    "timestamp_utc": "2026-10-01T07:10:54.263903+00:00",
+    "title": "2. Cross-validation selection and held-out results",
+    "command": [
+      "cat",
+      "artifacts/metrics.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\n  \"selected_model\": \"logistic_regression\",\n  \"selection_metric\": \"mean CV ROC-AUC\",\n  \"candidates\": [\n    {\n      \"model\": \"logistic_regression\",\n      \"parameters\": {\n        \"classifier__C\": 1.0\n      },\n      \"cv_accuracy\": 0.8471088435374149,\n      \"cv_precision\": 0.8767529146045769,\n      \"cv_recall\": 0.783399209486166,\n      \"cv_roc_auc\": 0.9024931590148981\n    },\n    {\n      \"model\": \"random_forest\",\n      \"parameters\": {\n        \"classifier__max_depth\": 3,\n        \"classifier__min_samples_leaf\": 1\n      },\n      \"cv_accuracy\": 0.8137755102040816,\n      \"cv_precision\": 0.8347935696017537,\n      \"cv_recall\": 0.7462450592885375,\n      \"cv_roc_auc\": 0.8992472101167754\n    }\n  ],\n  \"test_metrics\": {\n    \"accuracy\": 0.8852459016393442,\n    \"precision\": 0.8387096774193549,\n    \"recall\": 0.9285714285714286,\n    \"roc_auc\": 0.9664502164502166\n  },\n  \"train_rows\": 242,\n  \"test_rows\": 61,\n  \"threshold\": 0.5,\n  \"seed\": 42,\n  \"dataset_sha256\": \"e81973d3356c231ed8903aab16f5faa72d9679eb8ef6dc98a602b25df3f5d23d\",\n  \"features\": [\n    \"age\",\n    \"sex\",\n    \"cp\",\n    \"trestbps\",\n    \"chol\",\n    \"fbs\",\n    \"restecg\",\n    \"thalach\",\n    \"exang\",\n    \"oldpeak\",\n    \"slope\",\n    \"ca\",\n    \"thal\"\n  ],\n  \"mlflow_run_id\": \"ce00050d09b24a168a9da3cb91c5410b\"\n}",
+    "stderr": ""
+  },
+  {
+    "timestamp_utc": "2026-10-01T07:10:55.863164+00:00",
+    "title": "3. Automated test evidence",
+    "command": [
+      "cat",
+      "artifacts/evidence/tests.log"
+    ],
+    "exit_code": 0,
+    "stdout": "...........                                                              [100%]\n=============================== warnings summary ===============================\n.venv/lib/python3.13/site-packages/starlette/testclient.py:51\n  /Users/admin/Desktop/MLOps_Assignment/.venv/lib/python3.13/site-packages/starlette/testclient.py:51: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.\n    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]\n\ntests/test_data.py::test_cleaning_preserves_missing_and_maps_target\ntests/test_data.py::test_bad_data_rejected[num-5]\ntests/test_data.py::test_bad_data_rejected[num-nan]\ntests/test_data.py::test_bad_data_rejected[cp-0]\n  /Users/admin/Desktop/MLOps_Assignment/src/heart_ml/data.py:40: FutureWarning: Downcasting behavior in `replace` is deprecated and will be removed in a future version. To retain the old behavior, explicitly call `result.infer_objects(copy=False)`. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`\n    frame = frame.replace(\"?\", float(\"nan\"))\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n- generated xml file: /Users/admin/Desktop/MLOps_Assignment/artifacts/evidence/tests.xml -\n11 passed, 5 warnings in 50.70s\n",
+    "stderr": ""
+  },
+  {
+    "timestamp_utc": "2026-10-01T07:10:56.955781+00:00",
+    "title": "4. Container build and isolated prediction proof",
+    "command": [
+      "cat",
+      "artifacts/evidence/docker-prediction.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"prediction\":0,\"disease_probability\":0.1655348172622663,\"confidence\":0.8344651827377337,\"model_version\":\"ce00050d09b24a168a9da3cb91c5410b\",\"usage\":\"Educational classifier; not a clinical diagnosis.\"}",
+    "stderr": ""
+  },
+  {
+    "timestamp_utc": "2026-10-01T07:10:58.337893+00:00",
+    "title": "5. Live Kubernetes replicas and Ingress",
+    "command": [
+      "kubectl",
+      "--kubeconfig",
+      "deployment/kubeconfig",
+      "-n",
+      "heart-mlops",
+      "get",
+      "deployments,pods,ingress"
+    ],
+    "exit_code": 0,
+    "stdout": "NAME                        READY   UP-TO-DATE   AVAILABLE   AGE\ndeployment.apps/heart-api   2/2     2            2           10m\ndeployment.apps/traefik     1/1     1            1           10m\n\nNAME                             READY   STATUS    RESTARTS   AGE\npod/heart-api-789df48f5b-49sfz   1/1     Running   0          10m\npod/heart-api-789df48f5b-xvcmg   1/1     Running   0          10m\npod/traefik-69f6c9655-sv4hm      1/1     Running   0          10m\n\nNAME                                  CLASS           HOSTS   ADDRESS   PORTS   AGE\ningress.networking.k8s.io/heart-api   heart-traefik   *                 80      10m\n",
+    "stderr": ""
+  },
+  {
+    "timestamp_utc": "2026-10-01T07:10:59.362964+00:00",
+    "title": "6. Live deployed prediction through Ingress",
+    "command": [
+      "curl",
+      "-fsS",
+      "http://127.0.0.1:8080/predict",
+      "-H",
+      "Content-Type: application/json",
+      "--data",
+      "@examples/patient.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"prediction\":0,\"disease_probability\":0.1655348172622663,\"confidence\":0.8344651827377337,\"model_version\":\"ce00050d09b24a168a9da3cb91c5410b\",\"usage\":\"Educational classifier; not a clinical diagnosis.\"}",
+    "stderr": ""
+  },
+  {
+    "timestamp_utc": "2026-10-01T07:11:00.652237+00:00",
+    "title": "7. Live monitoring stack",
+    "command": [
+      "docker",
+      "compose",
+      "-f",
+      "deployment/compose.yaml",
+      "ps"
+    ],
+    "exit_code": 0,
+    "stdout": "NAME                      IMAGE                    COMMAND                  SERVICE      CREATED          STATUS                   PORTS\ndeployment-api-1          heart-api:1.0.0          \"uvicorn heart_ml.ap\u2026\"   api          8 minutes ago    Up 7 minutes (healthy)   0.0.0.0:8002->8000/tcp, [::]:8002->8000/tcp\ndeployment-grafana-1      grafana/grafana:11.6.0   \"/run.sh\"                grafana      13 minutes ago   Up 11 minutes            0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp\ndeployment-prometheus-1   prom/prometheus:v3.2.1   \"/bin/prometheus --c\u2026\"   prometheus   13 minutes ago   Up 11 minutes            0.0.0.0:9090->9090/tcp, [::]:9090->9090/tcp\n",
+    "stderr": ""
+  },
+  {
+    "timestamp_utc": "2026-10-01T07:11:02.247895+00:00",
+    "title": "8. Live Prometheus scrape status",
+    "command": [
+      "curl",
+      "-fsS",
+      "http://127.0.0.1:9090/api/v1/targets"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"status\":\"success\",\"data\":{\"activeTargets\":[{\"discoveredLabels\":{\"__address__\":\"api:8000\",\"__metrics_path__\":\"/metrics\",\"__scheme__\":\"http\",\"__scrape_interval__\":\"5s\",\"__scrape_timeout__\":\"5s\",\"job\":\"heart-api\"},\"labels\":{\"instance\":\"api:8000\",\"job\":\"heart-api\"},\"scrapePool\":\"heart-api\",\"scrapeUrl\":\"http://api:8000/metrics\",\"globalUrl\":\"http://api:8000/metrics\",\"lastError\":\"\",\"lastScrape\":\"2026-10-01T07:11:01.593339697Z\",\"lastScrapeDuration\":0.011475335,\"health\":\"up\",\"scrapeInterval\":\"5s\",\"scrapeTimeout\":\"5s\"}],\"droppedTargets\":[],\"droppedTargetCounts\":{\"heart-api\":0}}}",
+    "stderr": ""
+  },
+  {
+    "timestamp_utc": "2026-10-01T07:11:03.086031+00:00",
+    "title": "9. Verified implementation status",
+    "command": [
+      "cat",
+      "artifacts/evidence/verification.json"
+    ],
+    "exit_code": 0,
+    "stdout": "{\n  \"tests\": \"11 passed\",\n  \"lint\": \"Ruff passed\",\n  \"docker\": \"Image built; isolated health and prediction passed\",\n  \"kubernetes\": \"kind cluster; two API replicas ready; Traefik Ingress verified at http://127.0.0.1:8080\",\n  \"monitoring\": \"Compose services running; Prometheus target up and request series verified; Grafana healthy\",\n  \"github\": \"https://github.com/2025ae05588/ml-assignment1; publication pending\"\n}",
+    "stderr": ""
+  }
+]
