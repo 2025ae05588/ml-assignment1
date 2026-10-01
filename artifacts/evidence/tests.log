@@ -1,0 +1,16 @@
+...........                                                              [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.13/site-packages/starlette/testclient.py:51
+  /Users/admin/Desktop/MLOps_Assignment/.venv/lib/python3.13/site-packages/starlette/testclient.py:51: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+tests/test_data.py::test_cleaning_preserves_missing_and_maps_target
+tests/test_data.py::test_bad_data_rejected[num-5]
+tests/test_data.py::test_bad_data_rejected[num-nan]
+tests/test_data.py::test_bad_data_rejected[cp-0]
+  /Users/admin/Desktop/MLOps_Assignment/src/heart_ml/data.py:40: FutureWarning: Downcasting behavior in `replace` is deprecated and will be removed in a future version. To retain the old behavior, explicitly call `result.infer_objects(copy=False)`. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+    frame = frame.replace("?", float("nan"))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/admin/Desktop/MLOps_Assignment/artifacts/evidence/tests.xml -
+11 passed, 5 warnings in 50.70s

@@ -1,0 +1,20 @@
+{
+  "experiments": [
+    {
+      "experiment_id": "1",
+      "name": "cleveland-heart-classification",
+      "artifact_location": "/Users/admin/Desktop/MLOps_Assignment/mlruns/1",
+      "lifecycle_stage": "active",
+      "last_update_time": 1790837217207,
+      "creation_time": 1790837217207
+    },
+    {
+      "experiment_id": "0",
+      "name": "Default",
+      "artifact_location": "/Users/admin/Desktop/MLOps_Assignment/mlruns/0",
+      "lifecycle_stage": "active",
+      "last_update_time": 1790837217202,
+      "creation_time": 1790837217202
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "selected_model": "logistic_regression",
+  "selection_metric": "mean CV ROC-AUC",
+  "candidates": [
+    {
+      "model": "logistic_regression",
+      "parameters": {
+        "classifier__C": 1.0
+      },
+      "cv_accuracy": 0.8471088435374149,
+      "cv_precision": 0.8767529146045769,
+      "cv_recall": 0.783399209486166,
+      "cv_roc_auc": 0.9024931590148981
+    },
+    {
+      "model": "random_forest",
+      "parameters": {
+        "classifier__max_depth": 3,
+        "classifier__min_samples_leaf": 1
+      },
+      "cv_accuracy": 0.8137755102040816,
+      "cv_precision": 0.8347935696017537,
+      "cv_recall": 0.7462450592885375,
+      "cv_roc_auc": 0.8992472101167754
+    }
+  ],
+  "test_metrics": {
+    "accuracy": 0.8852459016393442,
+    "precision": 0.8387096774193549,
+    "recall": 0.9285714285714286,
+    "roc_auc": 0.9664502164502166
+  },
+  "train_rows": 242,
+  "test_rows": 61,
+  "threshold": 0.5,
+  "seed": 42,
+  "dataset_sha256": "e81973d3356c231ed8903aab16f5faa72d9679eb8ef6dc98a602b25df3f5d23d",
+  "features": [
+    "age",
+    "sex",
+    "cp",
+    "trestbps",
+    "chol",
+    "fbs",
+    "restecg",
+    "thalach",
+    "exang",
+    "oldpeak",
+    "slope",
+    "ca",
+    "thal"
+  ],
+  "mlflow_run_id": "ce00050d09b24a168a9da3cb91c5410b"
+}

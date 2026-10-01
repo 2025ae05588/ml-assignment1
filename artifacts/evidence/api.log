@@ -1,0 +1,14 @@
+INFO:     Started server process [4315]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+{"method": "GET", "route": "/health", "status": 200, "duration_seconds": 0.026171}
+INFO:     127.0.0.1:50453 - "GET /health HTTP/1.1" 200 OK
+{"method": "POST", "route": "/predict", "status": 200, "duration_seconds": 0.299176}
+INFO:     127.0.0.1:50454 - "POST /predict HTTP/1.1" 200 OK
+{"method": "GET", "route": "/metrics", "status": 200, "duration_seconds": 0.005603}
+INFO:     127.0.0.1:50455 - "GET /metrics HTTP/1.1" 200 OK
+{"method": "GET", "route": "unmatched", "status": 200, "duration_seconds": 0.000866}
+INFO:     127.0.0.1:50467 - "GET /docs HTTP/1.1" 200 OK
+{"method": "GET", "route": "unmatched", "status": 200, "duration_seconds": 0.122459}
+INFO:     127.0.0.1:50467 - "GET /openapi.json HTTP/1.1" 200 OK

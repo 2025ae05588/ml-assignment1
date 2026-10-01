@@ -1,0 +1,46 @@
+name: Test train and container verification
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+      - run: pip install -e .
+      - name: Lint
+        run: ruff check .
+      - name: Prepare data
+        run: python scripts/download_data.py
+      - name: Unit tests
+        run: pytest -q --junitxml=artifacts/tests.xml
+      - name: EDA and training
+        run: |
+          python scripts/eda.py
+          python scripts/train.py
+      - name: Build and smoke test isolated container
+        run: |
+          docker build -t heart-api:ci .
+          docker run -d --name heart-api -p 8000:8000 heart-api:ci
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://localhost:8000/health; then break; fi
+            sleep 2
+          done
+          curl -fsS http://localhost:8000/health
+          curl -fsS http://localhost:8000/predict -H 'Content-Type: application/json' --data @examples/patient.json | tee artifacts/container-prediction.json
+          docker logs heart-api > artifacts/container.log 2>&1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: results-model-and-tracking
+          path: |
+            artifacts/
+            mlflow.db
+            mlruns/
