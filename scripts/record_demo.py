@@ -60,6 +60,10 @@ def main():
             ["curl", "-fsS", "http://127.0.0.1:9090/api/v1/targets"],
         ),
         ("9. Verified implementation status", ["cat", "artifacts/evidence/verification.json"]),
+        (
+            "10. Actual successful GitHub Actions evidence",
+            ["cat", "artifacts/evidence/github-actions.json"],
+        ),
     ]
     env = {
         **os.environ,
@@ -96,7 +100,7 @@ def main():
         append(
             frame(
                 "Heart Disease MLOps - verified local pipeline",
-                "UCI Cleveland data -> CV models -> MLflow -> FastAPI -> Docker -> Kubernetes Ingress -> monitoring\n\nThis video records actual command outputs and includes genuine browser screenshots.\nIt is not a desktop screen capture. Previously generated training/test/build artifacts are labelled as evidence.\nGitHub publication status is recorded separately; no remote CI execution is implied.",
+                "UCI Cleveland data -> CV models -> MLflow -> FastAPI -> Docker -> Kubernetes Ingress -> monitoring\n\nThis video records actual command outputs and includes genuine browser screenshots.\nIt is not a desktop screen capture. Previously generated training/test/build artifacts are labelled as evidence.\nThe successful GitHub Actions run is shown as saved remote evidence; all service commands execute against the live local deployment.",
             ),
             8,
         )
@@ -104,6 +108,7 @@ def main():
             1: ("EDA distributions", "artifacts/eda/histograms.png"),
             2: ("Actual MLflow candidate runs", "screenshots/mlflow-runs.jpg"),
             7: ("Actual Grafana dashboard", "screenshots/grafana-dashboard.jpg"),
+            9: ("Actual successful GitHub Actions run", "screenshots/github-actions-success.jpg"),
         }
         for index, (title, command) in enumerate(commands, 1):
             result = subprocess.run(

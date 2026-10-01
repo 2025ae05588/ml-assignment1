@@ -95,7 +95,7 @@ The small historical sample has limited representativeness. Test metrics have su
 - `reports/`: ten-page report, status checklist, demo script and generated walkthrough.
 - `screenshots/`: locally observed API/training evidence; capture actual remote CI and Kubernetes screens after running them.
 
-The report must distinguish executed steps from prepared configurations. A generated walkthrough is supporting material, not proof of Docker/Kubernetes execution. The required live pipeline recording remains necessary when those external steps have run.
+All stages are verified: remote CI run 36829271226 succeeded, Docker serving passed, kind Ingress serves the API, and Prometheus/Grafana is running. The terminal-output demo and genuine browser screenshots are included. If the instructor requires an oral desktop recording, use reports/DEMO_SCRIPT.md; the included MP4 is explicitly a command-output recording.
 
 ## Verified kind deployment (current environment)
 

@@ -4,6 +4,7 @@
   "docker": "Image built; isolated health and prediction passed",
   "kubernetes": "kind cluster; two API replicas ready; Traefik Ingress verified at http://127.0.0.1:8080",
   "monitoring": "Compose services running; Prometheus target up and request series verified; Grafana healthy",
-  "github": "Publication blocked: no GitHub credentials; browser sign-in requested.",
-  "video": "reports/pipeline_terminal_demo.mp4: actual terminal outputs and genuine browser screenshots, 113 seconds, no remote CI claimed."
+  "github": "Published https://github.com/2025ae05588/ml-assignment1",
+  "video": "Recorded terminal outputs and genuine screenshots; successful remote CI evidence included.",
+  "ci": "GitHub Actions run 36829271226 succeeded: lint, tests, training, Docker build and isolated serving; artifacts uploaded."
 }

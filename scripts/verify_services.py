@@ -41,8 +41,11 @@ def main():
         "docker": "Image built; isolated health and prediction passed",
         "kubernetes": "kind cluster; two API replicas ready; Traefik Ingress verified at http://127.0.0.1:8080",
         "monitoring": "Compose services running; Prometheus target up and request series verified; Grafana healthy",
-        "github": "https://github.com/2025ae05588/ml-assignment1; publication pending",
+        "github": "https://github.com/2025ae05588/ml-assignment1 (see saved CI evidence)",
     }
+    if OUT.joinpath("github-actions.json").exists():
+        ci = json.loads(OUT.joinpath("github-actions.json").read_text())
+        status["ci"] = {"conclusion": ci.get("conclusion"), "url": ci.get("url")}
     OUT.joinpath("verification.json").write_text(json.dumps(status, indent=2))
     print(json.dumps(status, indent=2))
 

@@ -11,9 +11,11 @@
 - Running Prometheus/Grafana stack; target up, metrics queried and dashboard screenshot captured.
 - Exactly ten-page report, genuine screenshots, terminal-output demonstration MP4 and raw recording timestamps.
 
-## Awaiting GitHub authentication
-- Code committed locally; push to https://github.com/2025ae05588/ml-assignment1 failed because Git credentials are absent.
-- GitHub Actions workflow is implemented; remote execution and its screenshot remain pending authentication.
+## Published and verified remotely
+- Repository: https://github.com/2025ae05588/ml-assignment1
+- GitHub Actions run 36829271226 succeeded, including lint, tests, training, Docker build and isolated API checks.
+- Workflow produced downloadable model/results/tracking artifacts.
+- Genuine CI screenshot and saved job logs are included.
 
 ## Recording clarification
 The MP4 records actual command outputs plus real browser screenshots. It is not an operating-system screen recording. Use DEMO_SCRIPT.md if the instructor specifically expects a live desktop recording or oral explanation.

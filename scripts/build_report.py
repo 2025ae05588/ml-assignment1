@@ -140,6 +140,7 @@ def main():
             "artifacts/model.joblib contains preprocessing and the selected estimator. Serving reuses this fitted pipeline and never duplicates preprocessing logic. The evaluated model is retained without refitting on held-out data.",
             "requirements.txt pins direct packages; requirements-lock.txt records the exact local resolved environment for audit. The project is installed as an editable Python package through pyproject.toml. Linux CI and Docker perform independent installs from the direct manifest.",
             "For reproducibility, retain the raw dataset, data hash, split indices, CV tables, MLflow run and package manifests. Random seeds improve repeatability but do not guarantee identical results across all platforms and dependency implementations.",
+            image("screenshots/mlflow-runs.jpg", height=220),
         ],
     )
     page(
@@ -153,6 +154,8 @@ def main():
             "Container execution status: "
             + str(evidence.get("docker", "Not yet verified; configuration prepared.")),
             "Actual local API response and metrics are saved under artifacts/evidence. Never substitute host Python checks for proof that the container builds and runs.",
+            image("screenshots/kubernetes-terminal-evidence.png", height=200),
+            "Deployment evidence: recorded live kubectl output shows two ready API replicas and the configured Ingress. The full HTTP response is saved in artifacts/evidence/kubernetes-prediction.json.",
         ],
     )
     page(
@@ -162,8 +165,9 @@ def main():
             "Local test outcome: " + str(evidence.get("tests", "See artifacts/evidence/tests.log")),
             "Ruff performs syntax/import/undefined-name checks. GitHub Actions installs Python 3.13 and dependencies, prepares data, runs lint and tests, generates EDA, trains and tracks experiments, then builds and smoke-tests the Docker image.",
             "Command errors stop the workflow. An always-running upload step preserves metrics, model files, test XML, MLflow storage and container logs. Unit tests are a gate before training; training itself raises errors for failed CV fits.",
-            "The workflow targets https://github.com/2025ae05588/ml-assignment1. Remote publication and CI status are recorded in artifacts/evidence/verification.json. Capture the genuine workflow page and artifact listing after GitHub executes it.",
-            "The CI pipeline verifies the package; it does not automatically deploy to a production cluster. Deployment uses the included local script because no cluster credentials are configured.",
+            "Repository published: https://github.com/2025ae05588/ml-assignment1. GitHub Actions run 36829271226 succeeded, including all quality, training and isolated container checks. Model/results/tracking artifacts were uploaded. Actual status, logs and screenshots are included.",
+            "The CI pipeline verifies the package; local Kubernetes deployment uses the included script. Cluster credentials stay excluded from Git.",
+            image("screenshots/github-actions-success.jpg", height=250),
         ],
     )
     page(
@@ -178,6 +182,7 @@ def main():
             + str(evidence.get("monitoring", "See verification.json"))
             + ". The stack runs on localhost ports 8002 (API), 9090 (Prometheus) and 3000 (Grafana). The Compose monitoring demonstration targets its API container, not an unconfigured Kubernetes endpoint.",
             "Operational limitations: no authentication, TLS termination, drift detection, retraining trigger or production alerting is implemented. These are future extensions. Monitoring measures service behavior, not clinical accuracy. Do not expose the demonstration stack publicly without appropriate access controls.",
+            image("screenshots/grafana-dashboard.jpg", height=210),
         ],
     )
     page(
@@ -188,7 +193,7 @@ def main():
             "Submission evidence: actual MLflow experiment view; successful CI logs/artifacts; Docker build and sample prediction; Kubernetes replicas and exposed endpoint; Grafana traffic metrics; short live video of the whole pipeline.",
             "GitHub repository: https://github.com/2025ae05588/ml-assignment1. Verified deployed API access: http://127.0.0.1:8080 through the local kind cluster Ingress. No public cloud URL is claimed.",
             "reports/DEMO_SCRIPT.md supplies the live recording sequence. reports/pipeline_terminal_demo.mp4 records actual deployment/monitoring command outputs and genuine browser screenshots. Raw timestamps and exit codes are in demo_commands.json. It is a terminal-output recording, not an operating-system desktop capture.",
-            "Remaining work: authenticate GitHub, push the local commit, execute GitHub Actions and capture its genuine workflow screenshot. Local container, Kubernetes Ingress and monitoring checks passed. Record a desktop presentation separately if your instructor requires that format. reports/COMPLETION_STATUS.md and artifacts/evidence/verification.json distinguish prepared and executed work.",
+            "All implementation stages have executed successfully: local data/model/API verification, remote CI, Docker isolation, Kubernetes Ingress and monitoring. Genuine screenshots and the terminal demonstration are included. Record an oral desktop presentation separately if your instructor requires that format. reports/COMPLETION_STATUS.md and artifacts/evidence/verification.json distinguish prepared and executed work.",
             "References: UCI Heart Disease (DOI 10.24432/C52P4X); sklearn Pipeline and GridSearchCV; MLflow tracking; FastAPI; Docker; Kubernetes; Prometheus and Grafana official documentation. Refer to README commands and implementation files for concrete reproduction details.",
         ],
     )

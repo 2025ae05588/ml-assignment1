@@ -46,7 +46,7 @@
       },
       "targets": [
         {
-          "expr": "sum(rate(heart_api_requests_total{status=~\"5..\"}[1m]))",
+          "expr": "sum(rate(heart_api_requests_total{status=~\"5..\"}[1m])) or vector(0)",
           "refId": "A"
         }
       ]
