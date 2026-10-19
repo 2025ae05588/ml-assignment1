@@ -10,3 +10,7 @@ scripts/kind
 deployment/kubeconfig
 tmp/
 MLOps Assignment 1 Instructions.pdf
+.vm-tools/
+.vm-automation.lock
+artifacts/vm-runs/
+local-reference/

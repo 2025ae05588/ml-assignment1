@@ -142,10 +142,9 @@ The small historical sample has limited representativeness. Test metrics have su
 - `artifacts/`: plots, model, CV tables, split and metrics.
 - `.github/workflows/ci.yml`: executable CI and container validation.
 - `deployment/`: Kubernetes and monitoring configuration.
-- `reports/`: ten-page report, status checklist, demo script and generated walkthrough.
 - `screenshots/`: locally observed API/training evidence; capture actual remote CI and Kubernetes screens after running them.
 
-Previously recorded evidence includes successful remote CI, Docker serving, kind Ingress and Compose monitoring. These files describe past runs; services must be started again on a new machine. The terminal-output demo and genuine browser screenshots are included. If the instructor requires an oral desktop recording, use reports/DEMO_SCRIPT.md; the included MP4 is explicitly a command-output recording.
+Previously recorded evidence includes successful remote CI, Docker serving, kind Ingress and Compose monitoring. These files describe past runs; services must be started again on a new machine. Genuine browser screenshots are included. Report and video deliverables are prepared separately.
 
 ## Verified kind deployment (current environment)
 
