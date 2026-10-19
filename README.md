@@ -169,3 +169,7 @@ The kubeconfig is excluded from Git because it contains cluster credentials. To 
 ## Screenshot evidence
 
 Existing screenshots are in `screenshots/`. EDA and evaluation charts are generated automatically in `artifacts/`; they do not need to be photographed. For a new execution, manually capture the MLflow run table and selected run, passing tests, Docker build/container output, Kubernetes ready workloads, API prediction/health, Prometheus targets, Grafana dashboard, and a successful GitHub Actions run. Save new captures in `screenshots/` with descriptive names. New Prayogshala VM captures must be supplied by the person running that VM; existing images are not automatically evidence of a new run.
+
+## Current execution evidence
+
+The submitted model, metrics and VM screenshots correspond to MLflow run `cab705edb7524048a8ad5b31be8316c4`. See the [screenshot index](screenshots/README.md) for the complete supplied capture set. The [GitHub Actions screenshot](screenshots/github-actions-success.png) records successful [run 39255010564](https://github.com/2025ae05588/ml-assignment1/actions/runs/39255010564) for commit `3042161`, including tests, training, container verification and artifact upload. This is remote CI evidence; the other captures document the Prayogshala VM execution.

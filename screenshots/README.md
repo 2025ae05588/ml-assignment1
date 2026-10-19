@@ -1,6 +1,6 @@
 # Execution screenshots
 
-The PNG captures show the Prayogshala VM execution on 19 October 2026. The selected MLflow run and API response use model version `cab705edb7524048a8ad5b31be8316c4`, matching `artifacts/metrics.json`.
+The VM PNG captures show the Prayogshala execution on 19 October 2026. The GitHub Actions image is a direct browser capture of the remote CI job. The selected MLflow run and API response use model version `cab705edb7524048a8ad5b31be8316c4`, matching `artifacts/metrics.json`.
 
 | File | Evidence |
 |---|---|
@@ -18,7 +18,8 @@ The PNG captures show the Prayogshala VM execution on 19 October 2026. The selec
 | kubernetes-health-vm.png | Ingress health and model version |
 | prometheus-targets-vm.png | Healthy Prometheus target |
 | grafana-dashboard.png | Request rate, errors, latency and prediction counts |
+| github-actions-success.png | Successful GitHub Actions job and completed verification steps |
 
-`github-actions-success.jpg` is an earlier CI capture, retained as historical evidence. A new capture for the latest upload has not been supplied. The latest uploaded VM artifact commit passed [GitHub Actions](https://github.com/2025ae05588/ml-assignment1/actions/runs/39253566974).
+`github-actions-success.png` captures successful [workflow run 39255010564](https://github.com/2025ae05588/ml-assignment1/actions/runs/39255010564/job/118067978997), for commit `3042161`. It shows lint, data preparation, unit tests, EDA/training, Docker smoke tests and artifact upload completing successfully. GitHub CI and VM training are separate executions; the VM model run ID above refers to the submitted model.
 
 EDA and evaluation charts are generated files under `artifacts/`, rather than manual screenshots.
