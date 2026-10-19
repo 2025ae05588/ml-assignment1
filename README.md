@@ -2,12 +2,24 @@
 
 Educational end-to-end classification of UCI Cleveland heart disease labels. The 13 predictors plus target comprise 14 columns. This is not a clinically validated diagnosis or calibrated future-risk model.
 
-## Clean setup (Python 3.13)
+## Evaluator prerequisites
+
+Install Git and Python 3.12 or 3.13. For container and Kubernetes stages also install Docker Engine with Docker Compose (Linux), or Docker Desktop (macOS/Windows), and Minikube. Start Docker and confirm `docker info` works. Minikube uses the Docker driver and requires at least 2 available CPUs and 3 GB RAM in addition to the host's needs. Internet access is required for package and container downloads. Minikube supplies a matching kubectl through `minikube kubectl --`.
+
+Use a Linux/macOS Bash terminal; on Windows use a configured WSL2 Linux environment. The commands below run independently of any personal VM automation script. Browser links refer to the computer running the services; for a remote VM, open the browser inside that VM.
+
+```bash
+git clone https://github.com/2025ae05588/ml-assignment1.git
+cd ml-assignment1
+```
+
+## 1. Python setup, data, EDA, training and tests
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -e .
+python -m pip install --upgrade pip
+python -m pip install -e .
 python scripts/download_data.py
 python scripts/eda.py
 python scripts/train.py
@@ -26,7 +38,9 @@ curl http://localhost:8000/metrics
 
 Open http://localhost:8000/docs for the validated schema. `ca` and `thal` accept null; other fields are required. Confidence is the probability assigned to the predicted class, not a guarantee of correctness. Model artifacts use joblib; load only trusted artifacts.
 
-## Experiment tracking
+The cleaned dataset is `data/processed/heart.csv`. The download script recreates it from the source; EDA plots are generated under `artifacts/`. Training writes the saved preprocessing/model pipeline to `artifacts/model.joblib`, metrics and CV results to `artifacts/`, and local MLflow tracking records. `notebooks/01_eda.ipynb` provides the notebook equivalent. The saved pipeline can be served without retraining; retrain to create your own MLflow history.
+
+## 2. Experiment tracking
 
 ```bash
 mlflow ui --backend-store-uri sqlite:///mlflow.db --host 127.0.0.1 --port 5000
@@ -34,7 +48,7 @@ mlflow ui --backend-store-uri sqlite:///mlflow.db --host 127.0.0.1 --port 5000
 
 Open http://localhost:5000. Seven tuning configurations are tracked, then the CV-selected model is evaluated once on the untouched 20% test split. EDA, CV tables, parameters, dataset hash, metrics and the full pipeline are logged. `artifacts/split.json` records exact row partitions. Training retains the evaluated training-only model rather than silently refitting on test data.
 
-## Container verification
+## 3. Container verification
 
 Install Docker Desktop and start its engine. Then:
 
@@ -44,26 +58,62 @@ bash scripts/docker_verify.sh
 
 This builds the image, starts it on port 8001, waits for health, checks prediction and saves real evidence under `artifacts/evidence/`. GitHub Actions also executes this check on Ubuntu.
 
-## Local Kubernetes deployment
+## 4. Minikube: API, Prometheus and Grafana
 
-Install Docker, kubectl and Minikube:
+From the repository root, after preparing the model:
 
 ```bash
 bash scripts/deploy_local.sh
-minikube tunnel
 ```
 
-Keep the tunnel running. In another terminal:
+This builds the image, starts the `heart-prayogshala` Docker-backed Minikube profile, loads the image, applies the API and monitoring manifests, enables NGINX Ingress, restarts API replicas to load the newly built image, and waits for readiness. Configurations are in `deployment/kubernetes.yaml` and `deployment/minikube/`. Monitoring runs inside Kubernetes. No personal screenshot runner is required.
+
+Open four additional terminals from the repository root. Run one command per terminal and keep each running:
 
 ```bash
-kubectl -n heart-mlops get service heart-api
-curl http://SERVICE_EXTERNAL_IP/health
-curl http://SERVICE_EXTERNAL_IP/predict -H 'Content-Type: application/json' --data @examples/patient.json
+export KUBECONFIG="$PWD/deployment/kubeconfig"
+minikube -p heart-prayogshala kubectl -- -n heart-mlops port-forward service/heart-api 18002:80
 ```
 
-Replace SERVICE_EXTERNAL_IP with the actual service address. For Docker Desktop Kubernetes, build the image locally and apply `deployment/kubernetes.yaml` directly. Capture the rollout, service address, and prediction as deployment screenshots. Public cloud use requires pushing the image to your own registry and updating its manifest image reference.
+```bash
+export KUBECONFIG="$PWD/deployment/kubeconfig"
+minikube -p heart-prayogshala kubectl -- -n heart-mlops port-forward service/prometheus 19090:9090
+```
 
-## Monitoring
+```bash
+export KUBECONFIG="$PWD/deployment/kubeconfig"
+minikube -p heart-prayogshala kubectl -- -n heart-mlops port-forward service/grafana 13000:3000
+```
+
+```bash
+export KUBECONFIG="$PWD/deployment/kubeconfig"
+minikube -p heart-prayogshala kubectl -- -n ingress-nginx port-forward service/ingress-nginx-controller 18080:80
+```
+
+Verify from another terminal:
+
+```bash
+curl --fail http://127.0.0.1:18080/health
+curl --fail http://127.0.0.1:18080/predict -H 'Content-Type: application/json' --data @examples/patient.json
+curl --fail http://127.0.0.1:18002/metrics
+```
+
+Open these pages in the browser:
+
+| Evidence | URL or terminal command |
+|---|---|
+| API schema and interactive prediction | http://127.0.0.1:18002/docs |
+| Ingress health | http://127.0.0.1:18080/health |
+| Prometheus target UP | http://127.0.0.1:19090/targets |
+| Grafana dashboard | http://127.0.0.1:13000/d/heart-api/heart-api-operations |
+| Kubernetes workloads | `minikube -p heart-prayogshala kubectl -- -n heart-mlops get deployments,pods,services,ingress` |
+| Kubernetes Dashboard | `minikube -p heart-prayogshala dashboard --url` (open the printed URL) |
+
+For kubectl and Dashboard commands, export `KUBECONFIG="$PWD/deployment/kubeconfig"` first. In Swagger expand POST `/predict`, select **Try it out**, paste `examples/patient.json`, and select **Execute**. Send several predictions, wait at least 10 seconds, and refresh Grafana with the time range **Last 15 minutes**. A LoadBalancer external IP may remain pending: the commands above access the API through port-forwarded Ingress without requiring `minikube tunnel`.
+
+To stop: Ctrl+C in the port-forward/Dashboard terminals, then `minikube -p heart-prayogshala stop`. Restart with the deployment script. Delete the profile only when no longer needed: `minikube -p heart-prayogshala delete`. Cluster credentials in `deployment/kubeconfig` are excluded from Git.
+
+## 5. Alternative monitoring with Docker Compose
 
 ```bash
 docker compose -f deployment/compose.yaml up --build -d
@@ -71,7 +121,7 @@ docker compose -f deployment/compose.yaml up --build -d
 
 Monitoring API: http://localhost:8002; Prometheus: http://localhost:9090; Grafana: http://localhost:3000. Provisioning loads the Heart API dashboard automatically. Default Grafana admin credentials are for local demonstration only; change before public exposure. The monitoring API uses port 8002 to avoid conflicting with the standalone API. Request logs contain method, bounded route name, status and duration, without patient payloads. Metrics provide request rate, 5xx errors and latency; no data-drift or clinical-performance monitoring is claimed.
 
-## CI/CD
+## 6. CI verification
 
 The workflow lints, tests, trains, logs experiments, builds Docker and smoke-tests the API. Failed commands stop the job. Artifacts are uploaded even on failure. Deployment is a documented local Kubernetes step; CI does not have credentials to deploy to a cluster automatically.
 
@@ -95,7 +145,7 @@ The small historical sample has limited representativeness. Test metrics have su
 - `reports/`: ten-page report, status checklist, demo script and generated walkthrough.
 - `screenshots/`: locally observed API/training evidence; capture actual remote CI and Kubernetes screens after running them.
 
-All stages are verified: remote CI run 36829271226 succeeded, Docker serving passed, kind Ingress serves the API, and Prometheus/Grafana is running. The terminal-output demo and genuine browser screenshots are included. If the instructor requires an oral desktop recording, use reports/DEMO_SCRIPT.md; the included MP4 is explicitly a command-output recording.
+Previously recorded evidence includes successful remote CI, Docker serving, kind Ingress and Compose monitoring. These files describe past runs; services must be started again on a new machine. The terminal-output demo and genuine browser screenshots are included. If the instructor requires an oral desktop recording, use reports/DEMO_SCRIPT.md; the included MP4 is explicitly a command-output recording.
 
 ## Verified kind deployment (current environment)
 
@@ -116,3 +166,7 @@ python scripts/verify_services.py
 ```
 
 The kubeconfig is excluded from Git because it contains cluster credentials. To stop the demo services when finished: `docker compose -f deployment/compose.yaml down`. Delete the demo cluster with `kind delete cluster --name heart-assignment` only when you no longer need it.
+
+## Screenshot evidence
+
+Existing screenshots are in `screenshots/`. EDA and evaluation charts are generated automatically in `artifacts/`; they do not need to be photographed. For a new execution, manually capture the MLflow run table and selected run, passing tests, Docker build/container output, Kubernetes ready workloads, API prediction/health, Prometheus targets, Grafana dashboard, and a successful GitHub Actions run. Save new captures in `screenshots/` with descriptive names. New Prayogshala VM captures must be supplied by the person running that VM; existing images are not automatically evidence of a new run.
