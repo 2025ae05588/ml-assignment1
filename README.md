@@ -66,7 +66,7 @@ From the repository root, after preparing the model:
 bash scripts/deploy_local.sh
 ```
 
-This builds the image, starts the `heart-prayogshala` Docker-backed Minikube profile, loads the image, applies the API and monitoring manifests, enables NGINX Ingress, restarts API replicas to load the newly built image, and waits for readiness. Configurations are in `deployment/kubernetes.yaml` and `deployment/minikube/`. Monitoring runs inside Kubernetes. No personal screenshot runner is required.
+This builds the image and gives it a tag derived from its Docker content ID, starts the `heart-prayogshala` Docker-backed Minikube profile, loads that exact image, and applies a temporary API manifest referencing the content tag. Changed model artifacts therefore change the deployed image reference instead of reusing a cached fixed tag. The script waits for the NGINX controller and admission jobs before applying Ingress, retries transient admission failures, deploys monitoring, and waits for all deployments to become ready. The committed API manifest is not edited. Configurations are in `deployment/kubernetes.yaml` and `deployment/minikube/`. Monitoring runs inside Kubernetes. No personal screenshot runner is required.
 
 Open four additional terminals from the repository root. Run one command per terminal and keep each running:
 
