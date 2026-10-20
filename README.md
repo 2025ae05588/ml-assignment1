@@ -173,3 +173,9 @@ Existing screenshots are in `screenshots/`. EDA and evaluation charts are genera
 ## Current execution evidence
 
 The submitted model, metrics and VM screenshots correspond to MLflow run `cab705edb7524048a8ad5b31be8316c4`. See the [screenshot index](screenshots/README.md) for the complete supplied capture set. The [GitHub Actions screenshot](screenshots/github-actions-success.png) records successful [run 39255010564](https://github.com/2025ae05588/ml-assignment1/actions/runs/39255010564) for commit `3042161`, including tests, training, container verification and artifact upload. This is remote CI evidence; the other captures document the Prayogshala VM execution.
+
+## Architecture diagram
+
+![Current Minikube architecture](artifacts/architecture.png)
+
+The diagram distinguishes training/model selection from MLflow tracking and shows the API, NGINX Ingress and monitoring inside Minikube. Port `18080` is local access through a port-forward to the Ingress controller. Rebuild the PNG and SVG with `python scripts/build_architecture.py`.
