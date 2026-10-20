@@ -28,27 +28,58 @@ INK = colors.HexColor("#18394d")
 TEAL = colors.HexColor("#137b8b")
 WIDTH = A4[0] - 88
 STYLES = getSampleStyleSheet()
-STYLES.add(ParagraphStyle(
-    name="ReportBody", fontName="Helvetica", fontSize=10, leading=14,
-    textColor=INK, spaceAfter=9,
-))
-STYLES.add(ParagraphStyle(
-    name="ReportHeading", fontName="Helvetica-Bold", fontSize=20, leading=25,
-    textColor=TEAL, spaceAfter=14,
-))
-STYLES.add(ParagraphStyle(
-    name="ReportSub", fontName="Helvetica-Bold", fontSize=11, leading=15,
-    textColor=TEAL, spaceBefore=6, spaceAfter=7,
-))
-STYLES.add(ParagraphStyle(
-    name="ReportSmall", parent=STYLES["ReportBody"], fontSize=8.3, leading=11,
-    spaceAfter=6,
-))
-STYLES.add(ParagraphStyle(
-    name="ReportCode", fontName="Courier", fontSize=7.8, leading=10.7,
-    backColor=colors.HexColor("#f0f4f6"), borderPadding=7,
-    spaceBefore=3, spaceAfter=12,
-))
+STYLES.add(
+    ParagraphStyle(
+        name="ReportBody",
+        fontName="Helvetica",
+        fontSize=10,
+        leading=14,
+        textColor=INK,
+        spaceAfter=9,
+    )
+)
+STYLES.add(
+    ParagraphStyle(
+        name="ReportHeading",
+        fontName="Helvetica-Bold",
+        fontSize=20,
+        leading=25,
+        textColor=TEAL,
+        spaceAfter=14,
+    )
+)
+STYLES.add(
+    ParagraphStyle(
+        name="ReportSub",
+        fontName="Helvetica-Bold",
+        fontSize=11,
+        leading=15,
+        textColor=TEAL,
+        spaceBefore=6,
+        spaceAfter=7,
+    )
+)
+STYLES.add(
+    ParagraphStyle(
+        name="ReportSmall",
+        parent=STYLES["ReportBody"],
+        fontSize=8.3,
+        leading=11,
+        spaceAfter=6,
+    )
+)
+STYLES.add(
+    ParagraphStyle(
+        name="ReportCode",
+        fontName="Courier",
+        fontSize=7.8,
+        leading=10.7,
+        backColor=colors.HexColor("#f0f4f6"),
+        borderPadding=7,
+        spaceBefore=3,
+        spaceAfter=12,
+    )
+)
 
 
 def para(text, style="ReportBody"):
@@ -58,7 +89,8 @@ def para(text, style="ReportBody"):
 def link(label, url, style="ReportBody"):
     return Paragraph(
         f'<link href="{escape(url, {chr(34): "&quot;"})}" color="#087f9c">'
-        f'<u>{escape(label)}</u></link>', STYLES[style],
+        f"<u>{escape(label)}</u></link>",
+        STYLES[style],
     )
 
 
@@ -74,15 +106,19 @@ def picture(path, max_height=245, width=WIDTH):
 def grid(rows, widths=None):
     content = [[para(cell, "ReportSmall") for cell in row] for row in rows]
     item = Table(content, colWidths=widths, hAlign="LEFT", repeatRows=1)
-    item.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#e4f1f4")),
-        ("VALIGN", (0, 0), (-1, -1), "TOP"),
-        ("GRID", (0, 0), (-1, -1), 0.35, colors.HexColor("#cbd9e0")),
-        ("LEFTPADDING", (0, 0), (-1, -1), 7),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 7),
-        ("TOPPADDING", (0, 0), (-1, -1), 6),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
-    ]))
+    item.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#e4f1f4")),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("GRID", (0, 0), (-1, -1), 0.35, colors.HexColor("#cbd9e0")),
+                ("LEFTPADDING", (0, 0), (-1, -1), 7),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 7),
+                ("TOPPADDING", (0, 0), (-1, -1), 6),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+            ]
+        )
+    )
     return item
 
 
@@ -96,271 +132,329 @@ def main():
         if sections:
             story.append(PageBreak())
         sections.append(title)
+        if len(sections) == 1:
+            story.append(para("Course ID: AIMLCZG523", "ReportSub"))
+            story.append(para("MLOps Assignment 1", "ReportHeading"))
+            story.append(para("Name: Swarnali Deb", "ReportBody"))
+            story.append(para("Student ID: 2025ae05588", "ReportBody"))
+            story.append(para("GitHub Repository Link", "ReportSub"))
+            story.append(link(REPO, REPO))
+            story.append(para("Demonstration Video", "ReportSub"))
+            story.append(link("Heart Disease MLOps - Video Walkthrough (MP4)", VIDEO))
+            story.append(Spacer(1, 12))
         story.append(para(title, "ReportHeading"))
         for block in blocks:
             story.append(para(block) if isinstance(block, str) else block)
             story.append(Spacer(1, 5))
 
-    page("01  Project overview and architecture", [
-        para("AIMLCZG523 | MLOps Assignment 01 | Student ID: 2025ae05588", "ReportSub"),
-        "Heart disease classification: reproducible model development, experiment tracking, "
-        "tested serving, local Kubernetes deployment and operational monitoring. Prepared 20 October 2026.",
-        "The UCI Cleveland labels are predicted from 13 health-data features. This is an educational "
-        "classifier of a recorded diagnosis label, not a clinically validated diagnosis or future-risk score.",
-        picture("artifacts/architecture.png", max_height=280),
-        para("Figure 1. Current Minikube architecture. Training selects the model; MLflow records "
-             "experiments. NGINX Ingress, API replicas and monitoring run inside Minikube. "
-             "GitHub Actions verifies the project; local deployment is separate.", "ReportSmall"),
-        link("GitHub repository - open source, artifacts and instructions", REPO),
-        link("Demonstration video - open the MP4 on GitHub", VIDEO),
-        para(REPO, "ReportSmall"),
-        para(VIDEO, "ReportSmall"),
-        "Evidence scope: the submitted model and VM screenshots use MLflow run "
-        f"{result['mlflow_run_id']}. Later CI runs are independent verification executions. "
-        "The video is a recorded Prayogshala walkthrough, approximately 10 minutes 21 seconds.",
-    ])
+    page(
+        "01  Project overview and architecture",
+        [
+            "This project develops a heart disease classification system using the UCI Cleveland dataset. The workflow covers data preparation, model comparison, experiment tracking and API deployment on the Prayogshala VM. Testing and monitoring support the application from development through deployment.",
+            "The model predicts the recorded heart disease label from 13 patient-health features. Its purpose is to demonstrate an end-to-end MLOps workflow. Clinical diagnosis and prediction of future disease risk are outside the scope of this project.",
+            picture("artifacts/architecture.png", max_height=280),
+            para(
+                "Figure 1. The workflow from data preparation to Minikube deployment. MLflow records "
+                "experiments. NGINX Ingress, API replicas and monitoring run inside Minikube. "
+                "GitHub Actions verifies the project; local deployment is separate.",
+                "ReportSmall",
+            ),
+        ],
+    )
 
-    page("02  Dataset acquisition and preparation", [
-        link("Source: UCI Heart Disease dataset", "https://archive.ics.uci.edu/dataset/45/heart+disease"),
-        "Citation: Janosi, Steinbrunn, Pfisterer and Detrano (1989), Heart Disease, "
-        "UCI Machine Learning Repository. DOI: 10.24432/C52P4X. License: CC BY 4.0.",
-        "The Cleveland subset contains 14 columns: 13 predictors and the original target. "
-        "No artificial features were added to satisfy the statement's approximate feature count. "
-        "scripts/download_data.py downloads the raw file if absent, validates it, writes the cleaned CSV "
-        "and records provenance in data/metadata.json.",
-        grid([
-            ["Property", "Observed result"],
-            ["Raw / cleaned rows", f"{metadata['raw_rows']} / {metadata['clean_rows']}"],
-            ["Exact duplicates removed", str(metadata["duplicates_removed"])],
-            ["Missing values", "ca: 4; thal: 2; all other predictors: 0"],
-            ["Label mapping", "num = 0 -> absent; num = 1, 2, 3, 4 -> present"],
-            ["Class counts", "Absent: 164 (54.1%); present: 139 (45.9%)"],
-        ], [155, WIDTH - 155]),
-        picture("artifacts/eda/class_balance.png", max_height=188),
-        para("Figure 2. Neither class overwhelmingly dominates; precision, recall and ROC-AUC "
-             "remain necessary to interpret different classification errors.", "ReportSmall"),
-        para("Raw-data SHA-256: " + metadata["sha256"], "ReportSmall"),
-        para("Cleaned-data SHA-256: " + result["dataset_sha256"], "ReportSmall"),
-        "Deterministic cleaning preserves missing predictors for fold-local imputation. Original "
-        "UCI category codes are validated, including cp 1-4, slope 1-3, ca 0-3 and thal 3/6/7.",
-    ])
+    page(
+        "02  Dataset acquisition and preparation",
+        [
+            link(
+                "Source: UCI Heart Disease dataset",
+                "https://archive.ics.uci.edu/dataset/45/heart+disease",
+            ),
+            "The Cleveland subset contains 303 records, 13 predictors and a diagnosis column. The diagnosis values were mapped to a binary target: 0 indicates absence of the recorded disease label, while values 1-4 indicate presence. The download script checks the raw file and writes the cleaned dataset. Source details and checksums are recorded in data/metadata.json.",
+            grid(
+                [
+                    ["Property", "Observed result"],
+                    ["Raw / cleaned rows", f"{metadata['raw_rows']} / {metadata['clean_rows']}"],
+                    ["Exact duplicates removed", str(metadata["duplicates_removed"])],
+                    ["Missing values", "ca: 4; thal: 2; all other predictors: 0"],
+                    ["Label mapping", "num = 0 -> absent; num = 1, 2, 3, 4 -> present"],
+                    ["Class counts", "Absent: 164 (54.1%); present: 139 (45.9%)"],
+                ],
+                [155, WIDTH - 155],
+            ),
+            picture("artifacts/eda/class_balance.png", max_height=188),
+            para(
+                "Figure 2. Neither class overwhelmingly dominates; precision, recall and ROC-AUC "
+                "remain necessary to interpret different classification errors.",
+                "ReportSmall",
+            ),
+            para("Raw-data SHA-256: " + metadata["sha256"], "ReportSmall"),
+            para("Cleaned-data SHA-256: " + result["dataset_sha256"], "ReportSmall"),
+            "Missing values occur in ca and thal. The '?' markers were converted to missing values and retained for imputation during training. Category checks preserve the original UCI coding, including cp 1-4, slope 1-3, ca 0-3 and thal 3/6/7. The hashes above identify the raw and cleaned files used in the experiment.",
+        ],
+    )
 
-    page("03  Exploratory data analysis", [
-        "scripts/eda.py and notebooks/01_eda.ipynb provide reproducible exploration. "
-        "Histograms inspect numerical feature ranges and distributions; the correlation heatmap "
-        "summarizes associations. summary.csv and missing.csv preserve descriptive statistics and "
-        "missing-value counts alongside the PNG figures.",
-        picture("artifacts/eda/histograms.png", max_height=235),
-        para("Figure 3. Numerical predictor distributions. Distribution shape and unusual values "
-             "motivate checking data quality, rather than deleting observations automatically.", "ReportSmall"),
-        picture("artifacts/eda/correlation.png", max_height=270),
-        para("Figure 4. Pearson correlations, including numerically coded categories. Category-code "
-             "correlations are descriptive; they are not continuous clinical effects or causal claims.", "ReportSmall"),
-        "All 13 predictors are retained. The test set is not used to select features. "
-        "No global scaling or imputation is fitted during EDA; learned transformations remain inside "
-        "the model pipeline.",
-    ])
+    page(
+        "03  Exploratory data analysis",
+        [
+            "Exploratory analysis examines class balance, missing values and feature distributions before model development. scripts/eda.py produces the charts and summary tables; notebooks/01_eda.ipynb provides the notebook version. The class counts are 164 absent and 139 present, indicating a modest difference rather than severe class imbalance.",
+            picture("artifacts/eda/histograms.png", max_height=215),
+            para(
+                "Figure 3. Numerical predictor distributions. Distribution shape and unusual values "
+                "motivate checking data quality, rather than deleting observations automatically.",
+                "ReportSmall",
+            ),
+            picture("artifacts/eda/correlation.png", max_height=250),
+            para(
+                "Figure 4. Pearson correlations, including numerically coded categories. Category-code "
+                "correlations are descriptive; they are not continuous clinical effects or causal claims.",
+                "ReportSmall",
+            ),
+            "All 13 predictors were retained. Correlations were used to describe the data, not to select features using the test set. Imputation and scaling are fitted during training rather than EDA, keeping validation and test information separate from the learned transformations.",
+        ],
+    )
 
     candidates = [["Estimator", "Accuracy", "Precision", "Recall", "ROC-AUC"]]
     for row in result["candidates"]:
-        candidates.append([
-            row["model"].replace("_", " "),
-            *[f"{row['cv_' + metric]:.4f}" for metric in
-              ("accuracy", "precision", "recall", "roc_auc")],
-        ])
-    page("04  Feature pipeline and model selection", [
-        "A single sklearn Pipeline combines a ColumnTransformer and classifier. Numerical "
-        "features (age, trestbps, chol, thalach, oldpeak) use median imputation and StandardScaler. "
-        "The eight remaining predictors use most-frequent imputation and OneHotEncoder with "
-        "handle_unknown='ignore'. Original category values are still validated at the API boundary.",
-        "The split is stratified: 242 training records and 61 held-out records, with random seed 42. "
-        "Five-fold shuffled StratifiedKFold operates only on the training partition. Keeping "
-        "preprocessing inside the pipeline prevents fold leakage.",
-        grid([
-            ["Model", "Search space / configuration"],
-            ["Logistic Regression", "C in {0.1, 1, 10}; max_iter=2000; seed=42"],
-            ["Random Forest", "150 trees; max_depth in {3, None}; "
-             "min_samples_leaf in {1, 4}; seed=42"],
-            ["Comparison", "7 configurations, 5 folds; common preprocessing and scoring"],
-            ["Selection", "Highest mean CV ROC-AUC; held-out set excluded from selection"],
-        ], [135, WIDTH - 135]),
-        para("Best configuration from each estimator", "ReportSub"),
-        grid(candidates, [145, 80, 80, 80, WIDTH - 385]),
-        "Logistic Regression was selected with C=1.0. The best Random Forest configuration "
-        "used max_depth=3 and min_samples_leaf=1. The simpler estimator had slightly higher "
-        "mean CV ROC-AUC; complexity alone was not a reason to prefer the forest.",
-        "Accuracy, precision, recall and ROC-AUC are recorded for every candidate, including "
-        "fold means and standard deviations. Full GridSearchCV outputs are stored in "
-        "artifacts/logistic_regression_cv.csv and artifacts/random_forest_cv.csv.",
-        "The exact split indices are preserved in artifacts/split.json. Failed CV fits raise "
-        "errors rather than being silently substituted with a passing result.",
-    ])
+        candidates.append(
+            [
+                row["model"].replace("_", " "),
+                *[
+                    f"{row['cv_' + metric]:.4f}"
+                    for metric in ("accuracy", "precision", "recall", "roc_auc")
+                ],
+            ]
+        )
+    page(
+        "04  Feature pipeline and model selection",
+        [
+            "The model pipeline combines a ColumnTransformer with a classifier. Five numerical features - age, trestbps, chol, thalach and oldpeak - use median imputation and standard scaling. The remaining eight features use most-frequent imputation and one-hot encoding. This separates continuous measurements from category codes and keeps preprocessing consistent across the two classifiers.",
+            "A stratified 80:20 split produces 242 training records and 61 test records, with random seed 42. Model tuning uses five-fold shuffled stratified cross-validation within the training set. Each fold fits its own preprocessing, preventing information from the validation fold from entering the training process.",
+            grid(
+                [
+                    ["Model", "Search space / configuration"],
+                    ["Logistic Regression", "C in {0.1, 1, 10}; max_iter=2000; seed=42"],
+                    [
+                        "Random Forest",
+                        "150 trees; max_depth in {3, None}; min_samples_leaf in {1, 4}; seed=42",
+                    ],
+                    ["Comparison", "7 configurations, 5 folds; common preprocessing and scoring"],
+                    ["Selection", "Highest mean CV ROC-AUC; held-out set excluded from selection"],
+                ],
+                [135, WIDTH - 135],
+            ),
+            para("Best configuration from each estimator", "ReportSub"),
+            grid(candidates, [145, 80, 80, 80, WIDTH - 385]),
+            "Logistic Regression achieved the higher mean CV ROC-AUC and was selected with C=1.0. The best Random Forest used max_depth=3 and min_samples_leaf=1. Although the difference is small, the validation results favour Logistic Regression; the test set was not used to choose between the models.",
+            "Accuracy, precision, recall and ROC-AUC were recorded for every configuration. Fold means and standard deviations describe both performance and variation. The complete search results are stored in artifacts/logistic_regression_cv.csv and artifacts/random_forest_cv.csv.",
+            "artifacts/split.json records the exact training and test indices. The search raises an error if a fit fails, so unsuccessful configurations cannot pass unnoticed.",
+        ],
+    )
 
     metrics = result["test_metrics"]
-    page("05  Held-out evaluation and limitations", [
-        "The selected training-only model was evaluated once on the untouched test partition. "
-        "The decision threshold remained 0.5; no threshold search used the test outcomes.",
-        grid([
-            ["Held-out metric", "Value", "Interpretation"],
-            ["Accuracy", f"{metrics['accuracy']:.4f}", "Fraction of all predictions correct"],
-            ["Precision", f"{metrics['precision']:.4f}", "Correct positives among positive predictions"],
-            ["Recall", f"{metrics['recall']:.4f}", "Detected positives among actual positives"],
-            ["ROC-AUC", f"{metrics['roc_auc']:.4f}", "Discrimination across decision thresholds"],
-        ], [110, 70, WIDTH - 180]),
-        Table([[
-            picture("artifacts/confusion_matrix.png", max_height=220, width=WIDTH / 2 - 6),
-            picture("artifacts/roc_curve.png", max_height=220, width=WIDTH / 2 - 6),
-        ]], colWidths=[WIDTH / 2, WIDTH / 2]),
-        para("Figures 5-6. Held-out confusion matrix and ROC curve for the selected pipeline.", "ReportSmall"),
-        "The observed confusion matrix contains 28 true negatives, 26 true positives, "
-        "5 false positives and 2 false negatives. Recall is high on this split, but the "
-        "61-row test set gives substantial sampling uncertainty.",
-        "This small historical sample does not establish generalization to other hospitals or "
-        "populations. Probabilities have not been externally validated or calibrated for clinical "
-        "use. Correlations are not causal effects, and the label is not a future-risk outcome.",
-        "Future evaluation should include external validation, calibration, subgroup analysis "
-        "and sensitivity to splits and thresholds. The model is retained as evaluated, without "
-        "refitting on held-out records.",
-    ])
+    page(
+        "05  Held-out evaluation and limitations",
+        [
+            "The selected model was evaluated on the held-out test set after cross-validation. A fixed threshold of 0.5 converts predicted probabilities into classes. Neither model selection nor threshold adjustment used the test outcomes.",
+            grid(
+                [
+                    ["Held-out metric", "Value", "Interpretation"],
+                    [
+                        "Accuracy",
+                        f"{metrics['accuracy']:.4f}",
+                        "Fraction of all predictions correct",
+                    ],
+                    [
+                        "Precision",
+                        f"{metrics['precision']:.4f}",
+                        "Correct positives among positive predictions",
+                    ],
+                    [
+                        "Recall",
+                        f"{metrics['recall']:.4f}",
+                        "Detected positives among actual positives",
+                    ],
+                    [
+                        "ROC-AUC",
+                        f"{metrics['roc_auc']:.4f}",
+                        "Discrimination across decision thresholds",
+                    ],
+                ],
+                [110, 70, WIDTH - 180],
+            ),
+            Table(
+                [
+                    [
+                        picture(
+                            "artifacts/confusion_matrix.png", max_height=220, width=WIDTH / 2 - 6
+                        ),
+                        picture("artifacts/roc_curve.png", max_height=220, width=WIDTH / 2 - 6),
+                    ]
+                ],
+                colWidths=[WIDTH / 2, WIDTH / 2],
+            ),
+            para(
+                "Figures 5-6. Held-out confusion matrix and ROC curve for the selected pipeline.",
+                "ReportSmall",
+            ),
+            "The confusion matrix contains 28 true negatives, 26 true positives, 5 false positives and 2 false negatives. Recall of 0.9286 indicates that most positive cases were detected on this split. However, the test set has only 61 records, so a small change in predictions would noticeably affect the metrics.",
+            "The results describe performance on this dataset and split. They do not establish performance in another hospital or population. The data is historical, and the probabilities have not been calibrated or externally validated for clinical use.",
+            "Further evaluation should include an independent dataset, subgroup comparisons and calibration analysis. Threshold choices should reflect the intended use and error costs. The saved model is the evaluated training-set model; it was not refitted using the test records.",
+        ],
+    )
 
-    page("06  Experiment tracking and model packaging", [
-        "MLflow uses a local SQLite store (mlflow.db) and local artifact storage. Seven "
-        "candidate runs log parameters, seed, dataset hash, CV metric means and standard deviations, "
-        "CV tables and EDA plots. A selected-model-heldout-evaluation run records test metrics, "
-        "evaluation plots and the full sklearn pipeline.",
-        para("Submitted VM evaluation run: " + result["mlflow_run_id"], "ReportSub"),
-        picture("screenshots/mlflow-selected-run-vm.png", max_height=285),
-        para("Figure 7. Actual Prayogshala MLflow evaluation run. Its run ID and displayed "
-             "metrics match artifacts/metrics.json and the API screenshots.", "ReportSmall"),
-        "artifacts/model.joblib bundles the fitted preprocessing and classifier. "
-        "artifacts/metrics.json holds the model version, metrics and data hash. Serving loads "
-        "this pipeline once at startup instead of reimplementing preprocessing.",
-        "requirements.txt pins direct dependencies; requirements-lock.txt records an earlier "
-        "resolved environment and is a reference snapshot, not a claim that all platforms are "
-        "identical. Python 3.12 or 3.13 is recommended; CI and Docker use Python 3.13.",
-        "MLflow histories are not committed. Re-running training creates new local runs; CI "
-        "uploads its tracking database and artifacts. The saved VM model remains independently "
-        "available in Git. Use joblib artifacts only from trusted sources.",
-        Preformatted(
-            "mlflow ui --backend-store-uri sqlite:///mlflow.db \\\n  --host 127.0.0.1 --port 5000", STYLES["ReportCode"],
-        ),
-    ])
+    page(
+        "06  Experiment tracking and model packaging",
+        [
+            "MLflow records the experiment settings, results and model artifacts. Run details are stored in a local SQLite database, mlflow.db. Seven candidate runs contain hyperparameters, the seed, data hash, CV metrics and EDA plots. The selected-model-heldout-evaluation run contains the test results, evaluation plots and fitted pipeline.",
+            para("MLflow evaluation run ID: " + result["mlflow_run_id"], "ReportSub"),
+            picture("screenshots/mlflow-selected-run-vm.png", max_height=285),
+            para(
+                "Figure 7. MLflow evaluation results from the Prayogshala VM. The run ID and "
+                "metrics match artifacts/metrics.json and the API screenshots.",
+                "ReportSmall",
+            ),
+            "The fitted preprocessing and classifier are packaged together in artifacts/model.joblib. The accompanying metrics.json records the model version, evaluation metrics and dataset hash. FastAPI loads the pipeline at startup and applies it directly to prediction requests, avoiding a separate implementation of preprocessing.",
+            "requirements.txt specifies the direct dependency versions, while requirements-lock.txt provides a resolved-environment reference. Python 3.12 or 3.13 is recommended for local setup; Docker and CI use Python 3.13. Retaining the split indices, seed and package versions helps explain and reproduce the reported results.",
+            "The model, metrics, data hashes and split file form the core experiment record. MLflow tracking files are also available through CI artifacts. Since joblib deserialization can execute Python objects, model files should only be loaded from trusted sources.",
+            Preformatted(
+                "mlflow ui --backend-store-uri sqlite:///mlflow.db \\\n  --host 127.0.0.1 --port 5000",
+                STYLES["ReportCode"],
+            ),
+        ],
+    )
 
-    page("07  Inference API and Docker isolation", [
-        "FastAPI provides POST /predict, GET /health, GET /metrics and interactive /docs. "
-        "Pydantic checks required fields, category codes, numeric bounds, extra fields and "
-        "non-finite values. ca and thal accept explicit nulls for pipeline imputation.",
-        "POST /predict returns prediction, disease_probability, confidence, model_version "
-        "and an educational-use note. Confidence is the probability assigned to the predicted "
-        "class, not calibrated clinical certainty.",
-        picture("screenshots/api-prediction-vm.png", max_height=255),
-        para("Figure 8. Actual HTTP 200 response from the VM API. The model version matches "
-             "the submitted MLflow run. The example returns class 0 with confidence about 0.8345.",
-             "ReportSmall"),
-        "Docker uses python:3.13-slim, installs the project, copies model.joblib and metrics.json, "
-        "runs as non-root UID 10001, and serves on port 8000. Its healthcheck calls /health. "
-        "The model is loaded at application startup; a missing model causes startup failure.",
-        "scripts/docker_verify.sh builds the image, starts a temporary isolated container on "
-        "host port 8001, checks health and JSON prediction, saves logs, then removes that container. "
-        "The recorded VM build and smoke-test evidence is in screenshots/docker-build-vm.png.",
-        "Structured request logs record method, bounded route, status and duration, excluding "
-        "patient payloads. This reduces unnecessary sensitive-data logging while supporting "
-        "operational investigation.",
-        Preformatted(
-            "curl -fsS http://127.0.0.1:18080/predict \\\n  -H 'Content-Type: application/json' \\\n  --data @examples/patient.json", STYLES["ReportCode"],
-        ),
-    ])
+    page(
+        "07  Inference API and Docker isolation",
+        [
+            "FastAPI exposes /predict, /health and /metrics, with interactive documentation at /docs. Pydantic validates required fields, category codes, numeric ranges and unexpected fields. Explicit nulls are allowed for ca and thal so that the fitted imputer can handle missing values.",
+            "A prediction response contains the class, disease probability, confidence and model version. Confidence is the probability assigned to the predicted class. It is not a guarantee of correctness or a calibrated clinical score; the response includes an educational-use note.",
+            picture("screenshots/api-prediction-vm.png", max_height=255),
+            para(
+                "Figure 8. HTTP 200 prediction response. The model version matches "
+                "the MLflow evaluation run. The example returns class 0 with confidence about 0.8345.",
+                "ReportSmall",
+            ),
+            "The Docker image is based on python:3.13-slim and includes the application, saved model and metadata. The service runs on port 8000 as a non-root user. A healthcheck calls /health, and a missing model causes startup to fail rather than leaving an unusable service running.",
+            "scripts/docker_verify.sh checks serving in an isolated container. It builds the image, starts a temporary container on port 8001 and calls the health and prediction endpoints. Logs are saved before the container is removed. The build output is included in screenshots/docker-build-vm.png.",
+            "Request logs contain the HTTP method, route, response status and duration. Patient payloads are excluded because they are unnecessary for these operational checks and could expose sensitive information.",
+            Preformatted(
+                "curl -fsS http://127.0.0.1:18080/predict \\\n  -H 'Content-Type: application/json' \\\n  --data @examples/patient.json",
+                STYLES["ReportCode"],
+            ),
+        ],
+    )
 
-    page("08  Automated tests and continuous integration", [
-        "The original VM capture shows 11 passing tests. The repository now has 12 tests, "
-        "including a deployment regression test added after the capture. Later successful CI "
-        "runs verify the updated repository without replacing the submitted VM model.",
-        grid([
-            ["Area", "Checks implemented"],
-            ["Data", "Target mapping, missing-value preservation, duplicate handling, invalid targets/categories"],
-            ["Model", "Training-only imputation statistics; serialized pipeline prediction equivalence"],
-            ["API", "Valid prediction, health, metrics, invalid/missing/extra fields and nullable features"],
-            ["Deployment", "Mocked command order, content-tagged image, admission readiness and retry"],
-        ], [95, WIDTH - 95]),
-        "GitHub Actions installs dependencies, runs Ruff, prepares data, executes Pytest, "
-        "generates EDA, trains, builds Docker, checks /health and /predict, and uploads "
-        "artifacts even if an earlier stage fails. Failed lint/tests/training stop subsequent "
-        "normal steps. No cluster credentials or automatic VM deployment are configured in CI.",
-        picture("screenshots/github-actions-success.png", max_height=265),
-        para("Figure 9. Successful run 39255010564 for screenshot commit 3042161. The screenshot "
-             "is remote CI evidence, not a VM-local workflow execution.", "ReportSmall"),
-        link("Later verified CI: architecture commit 618b99e - successful run 39379904180", CI,
-             "ReportSmall"),
-        "The workflow uploads model/results/tracking artifacts. CI-generated models have their "
-        "own run IDs and do not automatically overwrite the committed VM model.",
-    ])
+    page(
+        "08  Automated tests and continuous integration",
+        [
+            "Unit tests check data cleaning, preprocessing, model serialization and API behavior. A deployment regression test checks image tagging and Ingress readiness using mocked commands. These tests complement model evaluation by checking whether the surrounding software behaves as expected.",
+            grid(
+                [
+                    ["Area", "Checks implemented"],
+                    [
+                        "Data",
+                        "Target mapping, missing-value preservation, duplicate handling, invalid targets/categories",
+                    ],
+                    [
+                        "Model",
+                        "Training-only imputation statistics; serialized pipeline prediction equivalence",
+                    ],
+                    [
+                        "API",
+                        "Valid prediction, health, metrics, invalid/missing/extra fields and nullable features",
+                    ],
+                    [
+                        "Deployment",
+                        "Mocked command order, content-tagged image, admission readiness and retry",
+                    ],
+                ],
+                [95, WIDTH - 95],
+            ),
+            "GitHub Actions runs dependency installation, lint, data preparation, tests, EDA, training and Docker verification after a push. A failure in lint, tests or training stops subsequent normal steps. Artifact upload still runs to retain available outputs for investigation. Kubernetes deployment is performed separately; the workflow contains no VM cluster credentials.",
+            picture("screenshots/github-actions-success.png", max_height=265),
+            para(
+                "Figure 9. Successful GitHub Actions workflow showing completed validation, "
+                "training, Docker verification and artifact upload steps.",
+                "ReportSmall",
+            ),
+            link("Open a successful GitHub Actions workflow", CI, "ReportSmall"),
+            "Each workflow retains model outputs, metrics, test results and tracking files as downloadable artifacts. These files provide a record of the execution and support troubleshooting when a check fails.",
+        ],
+    )
 
-    page("09  Minikube deployment and monitoring", [
-        "scripts/deploy_local.sh starts profile heart-prayogshala with the Docker driver. It "
-        "loads a content-tagged image, applies a temporary API manifest, waits for NGINX and "
-        "admission jobs, retries transient Ingress failures and waits for ready workloads. "
-        "The committed manifest is unchanged. API and monitoring use namespace heart-mlops; "
-        "the NGINX controller uses ingress-nginx.",
-        picture("screenshots/minikube-dashboard-vm.png", max_height=205),
-        para("Figure 10. Actual Minikube Dashboard: two API replicas and ready monitoring workloads. "
-             "Readiness/liveness probes, resource limits, non-root API execution and dropped "
-             "capabilities are configured in deployment/kubernetes.yaml.", "ReportSmall"),
-        "Prometheus scrapes the API Service every five seconds. Grafana is provisioned with "
-        "the Prometheus datasource and Heart API Operations dashboard. Both run inside Minikube. "
-        "Traffic through Ingress reaches the API replicas; a direct Service port-forward can "
-        "select a single pod. Scraping through a load-balanced Service does not preserve per-pod "
-        "counter identity; pod-level discovery is a production improvement.",
-        picture("screenshots/grafana-dashboard.png", max_height=205),
-        para("Figure 11. VM request rate, 5xx errors, p95 latency and prediction counts after traffic "
-             "generation. The Prometheus target-UP capture is also in screenshots/.", "ReportSmall"),
-        "Monitoring covers service behavior, not drift or clinical performance. Authentication, "
-        "TLS termination, production alerting and automated retraining are not implemented. "
-        "Anonymous Grafana viewing and local port-forwards are demonstration settings.",
-    ])
+    page(
+        "09  Minikube deployment and monitoring",
+        [
+            "The application runs on Minikube with the Docker driver under profile heart-prayogshala. scripts/deploy_local.sh loads a content-tagged image and waits for the NGINX controller and admission jobs before applying Ingress. Temporary admission failures are retried. The API and monitoring use namespace heart-mlops; the controller uses ingress-nginx.",
+            picture("screenshots/minikube-dashboard-vm.png", max_height=205),
+            para(
+                "Figure 10. Minikube Dashboard: two API replicas and ready monitoring workloads. "
+                "Readiness/liveness probes, resource limits, non-root API execution and dropped "
+                "capabilities are configured in deployment/kubernetes.yaml.",
+                "ReportSmall",
+            ),
+            "Prometheus scrapes the API Service every five seconds, and Grafana displays the resulting metrics. Both services run inside Minikube. Requests through Ingress reach the API replicas, whereas a direct Service port-forward can select one pod. Per-pod scraping would be preferable for production monitoring because a load-balanced Service does not preserve a separate counter identity for each replica.",
+            picture("screenshots/grafana-dashboard.png", max_height=205),
+            para(
+                "Figure 11. VM request rate, 5xx errors, p95 latency and prediction counts after traffic "
+                "generation. The Prometheus target-UP capture is also in screenshots/.",
+                "ReportSmall",
+            ),
+            "The dashboard reports service activity rather than model quality. Data-drift detection, clinical-performance monitoring, TLS termination, authentication, production alerts and automated retraining are not implemented. Anonymous Grafana access and local port-forwards are demonstration settings that would need to be reviewed before public deployment.",
+        ],
+    )
 
-    page("10  Reproduction, access and submission links", [
-        "Prerequisites: Git, Python 3.12/3.13, Docker with Compose, and Minikube. Start Docker. "
-        "Allow at least two CPUs and 3 GB for the Minikube cluster plus host resources. "
-        "Internet is needed for dependencies, source data and images. The private Prayogshala "
-        "helper is not needed; run the repository commands below.",
-        Preformatted(
-            "git clone https://github.com/2025ae05588/ml-assignment1.git\n"
-            "cd ml-assignment1\n"
-            "python3 -m venv .venv\nsource .venv/bin/activate\n"
-            "python -m pip install -e .\n"
-            "python scripts/download_data.py\npython scripts/eda.py\n"
-            "ruff check .\npytest -q\npython scripts/train.py\n"
-            "bash scripts/docker_verify.sh\nbash scripts/deploy_local.sh",
-            STYLES["ReportCode"],
-        ),
-        "For local access, run each port-forward in its own terminal from the repository root. "
-        "In each terminal first export KUBECONFIG=\"$PWD/deployment/kubeconfig\". Then use:",
-        Preformatted(
-            "minikube -p heart-prayogshala kubectl -- -n heart-mlops \\\n  port-forward service/heart-api 18002:80\n"
-            "minikube -p heart-prayogshala kubectl -- -n heart-mlops \\\n  port-forward service/prometheus 19090:9090\n"
-            "minikube -p heart-prayogshala kubectl -- -n heart-mlops \\\n  port-forward service/grafana 13000:3000\n"
-            "minikube -p heart-prayogshala kubectl -- -n ingress-nginx \\\n  port-forward service/ingress-nginx-controller 18080:80",
-            STYLES["ReportCode"],
-        ),
-        grid([
-            ["VM-local URL", "Use"],
-            ["http://127.0.0.1:18002/docs", "Interactive JSON prediction"],
-            ["http://127.0.0.1:18080/health", "Ingress verification"],
-            ["http://127.0.0.1:19090/targets", "Prometheus target health"],
-            ["http://127.0.0.1:13000/d/heart-api/heart-api-operations", "Grafana dashboard"],
-        ], [310, WIDTH - 310]),
-        para("Local URLs refer to the machine running the forwards; no public API URL is claimed. "
-             "Keep forwards running while viewing. Stop with Ctrl+C; stop the cluster with "
-             "minikube -p heart-prayogshala stop. MLflow startup is on page 6.", "ReportSmall"),
-        link("Repository and full setup instructions", REPO),
-        link("Video walkthrough on GitHub - MP4, approximately 4.98 MB", VIDEO),
-        para("If GitHub does not play the video inline, use Download raw file on its file page. "
-             "The repository also contains code, cleaned data, notebook/scripts, model and metrics, "
-             "tests, workflow, Dockerfile, manifests, screenshots and this report.", "ReportSmall"),
-        link("Reference: scikit-learn Pipeline", "https://scikit-learn.org/stable/modules/compose.html",
-             "ReportSmall"),
-        link("Reference: MLflow tracking", "https://mlflow.org/docs/latest/ml/tracking/", "ReportSmall"),
-    ])
+    page(
+        "10  Reproduction, access and submission links",
+        [
+            "The setup requires Git, Python 3.12 or 3.13, Docker with Compose, and Minikube. Docker must be running, with at least two CPUs and 3 GB available for the cluster in addition to host resources. Internet access is needed to download dependencies, data and container images. The commands below reproduce the main workflow.",
+            Preformatted(
+                "git clone https://github.com/2025ae05588/ml-assignment1.git\n"
+                "cd ml-assignment1\n"
+                "python3 -m venv .venv\nsource .venv/bin/activate\n"
+                "python -m pip install -e .\n"
+                "python scripts/download_data.py\npython scripts/eda.py\n"
+                "ruff check .\npytest -q\npython scripts/train.py\n"
+                "bash scripts/docker_verify.sh\nbash scripts/deploy_local.sh",
+                STYLES["ReportCode"],
+            ),
+            'Run each port-forward in a separate terminal from the repository root. In every terminal, first set export KUBECONFIG="$PWD/deployment/kubeconfig". Keep the terminals running while accessing the browser pages.',
+            Preformatted(
+                "minikube -p heart-prayogshala kubectl -- -n heart-mlops \\\n  port-forward service/heart-api 18002:80\n"
+                "minikube -p heart-prayogshala kubectl -- -n heart-mlops \\\n  port-forward service/prometheus 19090:9090\n"
+                "minikube -p heart-prayogshala kubectl -- -n heart-mlops \\\n  port-forward service/grafana 13000:3000\n"
+                "minikube -p heart-prayogshala kubectl -- -n ingress-nginx \\\n  port-forward service/ingress-nginx-controller 18080:80",
+                STYLES["ReportCode"],
+            ),
+            grid(
+                [
+                    ["VM-local URL", "Use"],
+                    ["http://127.0.0.1:18002/docs", "Interactive JSON prediction"],
+                    ["http://127.0.0.1:18080/health", "Ingress verification"],
+                    ["http://127.0.0.1:19090/targets", "Prometheus target health"],
+                    [
+                        "http://127.0.0.1:13000/d/heart-api/heart-api-operations",
+                        "Grafana dashboard",
+                    ],
+                ],
+                [310, WIDTH - 310],
+            ),
+            para(
+                "Local URLs refer to the machine running the forwards; no public API URL is claimed. "
+                "Keep forwards running while viewing. Stop with Ctrl+C; stop the cluster with "
+                "minikube -p heart-prayogshala stop. MLflow startup is on page 6.",
+                "ReportSmall",
+            ),
+            link("Repository and full setup instructions", REPO),
+            link("Video Walkthrough MP4", VIDEO),
+            para(
+                "If GitHub does not play the video inline, use Download raw file on its file page. "
+                "The repository also contains code, cleaned data, notebook/scripts, model and metrics, "
+                "tests, workflow, Dockerfile, manifests, screenshots and this report.",
+                "ReportSmall",
+            ),
+        ],
+    )
 
     def footer(canvas, doc):
         canvas.saveState()
@@ -375,9 +469,15 @@ def main():
     output = ROOT / "output/pdf" / REPORT_NAME
     output.parent.mkdir(parents=True, exist_ok=True)
     SimpleDocTemplate(
-        str(output), pagesize=A4, leftMargin=44, rightMargin=44,
-        topMargin=37, bottomMargin=51, title="Heart Disease MLOps - Assignment 01",
-        author="2025ae05588", subject="Implementation, evaluation and deployment report",
+        str(output),
+        pagesize=A4,
+        leftMargin=44,
+        rightMargin=44,
+        topMargin=37,
+        bottomMargin=51,
+        title="Heart Disease MLOps - Assignment 01",
+        author="Swarnali Deb",
+        subject="Implementation, evaluation and deployment report",
     ).build(story, onFirstPage=footer, onLaterPages=footer)
     submission = ROOT / "reports" / REPORT_NAME
     submission.parent.mkdir(exist_ok=True)
