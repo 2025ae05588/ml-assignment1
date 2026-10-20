@@ -21,7 +21,7 @@ from reportlab.platypus import (
 
 ROOT = Path(__file__).resolve().parents[1]
 REPO = "https://github.com/2025ae05588/ml-assignment1"
-VIDEO = REPO + "/blob/main/videos/MLOps_Assignment1_2025ae05588_New.mp4"
+VIDEO = REPO + "/blob/main/video/MLOps_Assignment1_2025ae05588.mp4"
 CI = REPO + "/actions/runs/39379904180"
 REPORT_NAME = "MLOps_Assignment1_2025ae05588.pdf"
 INK = colors.HexColor("#18394d")

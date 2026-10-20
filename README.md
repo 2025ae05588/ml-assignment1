@@ -5,7 +5,7 @@ Educational end-to-end classification of UCI Cleveland heart disease labels. The
 ## Final submission files
 
 - [10-page PDF report](reports/MLOps_Assignment1_2025ae05588.pdf) - architecture, data/EDA, model comparison, results, tracking, tests, containerization, deployment, monitoring and reproduction instructions. Repository and video links are clickable inside the PDF.
-- [Prayogshala demonstration video](videos/MLOps_Assignment1_2025ae05588_New.mp4) - approximately 10 minutes 21 seconds, compressed MP4 (4.98 MB). If inline playback is unavailable, open the file and select **Download raw file**.
+- [Prayogshala demonstration video](video/MLOps_Assignment1_2025ae05588.mp4) - approximately 10 minutes 21 seconds, compressed MP4 (4.98 MB). If inline playback is unavailable, open the file and select **Download raw file**.
 - [Execution screenshot index](screenshots/README.md).
 
 Regenerate the report from the existing artifacts and screenshots with `python scripts/build_report.py`. It writes a build copy under `output/pdf/` and the submission copy under `reports/`. Re-training generates a new MLflow run; the report identifies the submitted VM run separately from CI executions.
@@ -152,7 +152,7 @@ The small historical sample has limited representativeness. Test metrics have su
 - `deployment/`: Kubernetes and monitoring configuration.
 - `screenshots/`: captured Prayogshala API, MLflow, Docker, Minikube and monitoring evidence, plus GitHub CI evidence.
 - `reports/`: final ten-page PDF report with clickable repository and video links.
-- `videos/`: compressed Prayogshala walkthrough MP4.
+- `video/`: compressed Prayogshala walkthrough MP4.
 
 Previously recorded evidence includes successful remote CI, Docker serving, kind Ingress and Compose monitoring. These files describe past runs; services must be started again on a new machine. Genuine browser screenshots, the final ten-page report and the recorded Prayogshala walkthrough are included; see Final submission files above.
 
