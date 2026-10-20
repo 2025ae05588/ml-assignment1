@@ -2,6 +2,14 @@
 
 Educational end-to-end classification of UCI Cleveland heart disease labels. The 13 predictors plus target comprise 14 columns. This is not a clinically validated diagnosis or calibrated future-risk model.
 
+## Final submission files
+
+- [10-page PDF report](reports/MLOps_Assignment1_2025ae05588.pdf) - architecture, data/EDA, model comparison, results, tracking, tests, containerization, deployment, monitoring and reproduction instructions. Repository and video links are clickable inside the PDF.
+- [Prayogshala demonstration video](videos/MLOps_Assignment1_2025ae05588_New.mp4) - approximately 10 minutes 21 seconds, compressed MP4 (4.98 MB). If inline playback is unavailable, open the file and select **Download raw file**.
+- [Execution screenshot index](screenshots/README.md).
+
+Regenerate the report from the existing artifacts and screenshots with `python scripts/build_report.py`. It writes a build copy under `output/pdf/` and the submission copy under `reports/`. Re-training generates a new MLflow run; the report identifies the submitted VM run separately from CI executions.
+
 ## Evaluator prerequisites
 
 Install Git and Python 3.12 or 3.13. For container and Kubernetes stages also install Docker Engine with Docker Compose (Linux), or Docker Desktop (macOS/Windows), and Minikube. Start Docker and confirm `docker info` works. Minikube uses the Docker driver and requires at least 2 available CPUs and 3 GB RAM in addition to the host's needs. Internet access is required for package and container downloads. Minikube supplies a matching kubectl through `minikube kubectl --`.
@@ -142,9 +150,11 @@ The small historical sample has limited representativeness. Test metrics have su
 - `artifacts/`: plots, model, CV tables, split and metrics.
 - `.github/workflows/ci.yml`: executable CI and container validation.
 - `deployment/`: Kubernetes and monitoring configuration.
-- `screenshots/`: locally observed API/training evidence; capture actual remote CI and Kubernetes screens after running them.
+- `screenshots/`: captured Prayogshala API, MLflow, Docker, Minikube and monitoring evidence, plus GitHub CI evidence.
+- `reports/`: final ten-page PDF report with clickable repository and video links.
+- `videos/`: compressed Prayogshala walkthrough MP4.
 
-Previously recorded evidence includes successful remote CI, Docker serving, kind Ingress and Compose monitoring. These files describe past runs; services must be started again on a new machine. Genuine browser screenshots are included. Report and video deliverables are prepared separately.
+Previously recorded evidence includes successful remote CI, Docker serving, kind Ingress and Compose monitoring. These files describe past runs; services must be started again on a new machine. Genuine browser screenshots, the final ten-page report and the recorded Prayogshala walkthrough are included; see Final submission files above.
 
 ## Verified kind deployment (current environment)
 
