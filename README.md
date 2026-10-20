@@ -5,7 +5,7 @@ Educational end-to-end classification of UCI Cleveland heart disease labels. The
 ## Final submission files
 
 - [10-page PDF report](reports/MLOps_Assignment1_2025ae05588.pdf) - architecture, data/EDA, model comparison, results, tracking, tests, containerization, deployment, monitoring and reproduction instructions. Repository and video links are clickable inside the PDF.
-- [Prayogshala demonstration video](video/MLOps_Assignment1_2025ae05588.mp4) - approximately 10 minutes 21 seconds, compressed MP4 (4.98 MB). If inline playback is unavailable, open the file and select **Download raw file**.
+- [Prayogshala demonstration video](video/MLOps_Assignment1_2025ae05588.mp4) - approximately 10 minutes 21 seconds, higher-quality MP4 (17.04 MB, 2560 x 1600). If inline playback is unavailable, open the file and select **Download raw file**.
 - [Execution screenshot index](screenshots/README.md).
 
 Regenerate the report from the existing artifacts and screenshots with `python scripts/build_report.py`. It writes a build copy under `output/pdf/` and the submission copy under `reports/`. Re-training generates a new MLflow run; the report identifies the submitted VM run separately from CI executions.

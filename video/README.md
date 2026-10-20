@@ -6,7 +6,7 @@ The recording demonstrates the project from the Prayogshala VM. Installation/tra
 
 - File: `MLOps_Assignment1_2025ae05588.mp4`
 - Duration: approximately 10 minutes 21 seconds.
-- Encoding: H.264 video, AAC audio; 854 x 534 pixels.
-- Compressed size: 4,981,969 bytes (approximately 4.98 MB).
+- Encoding: H.264 video, AAC audio; 2560 x 1600 pixels.
+- Compressed size: 17,040,668 bytes (approximately 17.04 MB).
 
 GitHub's file page provides the video or a download option. Use **View raw / Download raw file** if inline playback is unavailable.
